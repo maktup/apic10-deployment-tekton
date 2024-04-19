@@ -1,0 +1,12 @@
+FROM ubuntu:20.04
+RUN apt-get update
+RUN apt-get install -y curl
+RUN apt-get install coreutils
+COPY toolkit-linux.tgz /app/
+RUN tar -xzvf /app/toolkit-linux.tgz -C /app  
+RUN mv /app/apic-slim /app/apic  
+RUN rm /app/toolkit-linux.tgz
+ENV APIC_TOOLKIT /app
+ENV PATH="$PATH:$APIC_TOOLKIT"
+RUN $APIC_TOOLKIT/apic version --accept-license
+CMD ["tail", "-f", "/dev/null"]

@@ -1,0 +1,53 @@
+
+################################################################################################################## 
+## SCRIPTs para el TEST del FLUJO automatizador [UNDEPLOY]. ###################################################### 
+################################################################################################################## 
+ 
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: dummy-undeploy-apic-123abc
+  namespace: temp-3
+spec:
+  params:
+    - name: vSERVER_APIC
+      value: 'https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001'
+    - name: vREGION_APIC
+      value: 'provider/default-idp-2'
+    - name: vUSER_APIC
+      value: 'cguerra'
+    - name: vPASS_APIC
+      value: 'x12345678'
+    - name: vCATALOG_APIC
+      value: 'laboratorios' 
+    - name: vORG_APIC_DEV
+      value: 'dev-01'
+      #### Considerar solo enviar un AMBIENTE: [QA o PROD], el otro enviarlo como VACIO ####
+    - name: vORG_APIC_QA
+      value: 'qa-01'
+    - name: vORG_APIC_PROD
+      value: ''
+    - name: vFILE_PROD
+      value: 'product-crga-new_1.0.0.yaml'
+    - name: vNOM_PROD_VER
+      value: 'product-crga-new:1.0.0' 
+    - name: vOPERACION
+      value: 'undeploy' 
+
+  pipelineRef:
+    name: pipeline-deploy-apic
+    
+  serviceAccountName: pipeline
+  
+  timeouts:
+    pipeline: 1h0m0s
+
+  workspaces:
+    - name: workspace-pipeline-apic
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi

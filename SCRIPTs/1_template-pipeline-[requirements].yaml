@@ -1,0 +1,9 @@
+
+###################################################################################
+## SCRIPTs para los REQUERIMIENTOS base antes de ejecutar cualquier otro SCRIPT. ##
+###################################################################################
+
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  name: temp-3

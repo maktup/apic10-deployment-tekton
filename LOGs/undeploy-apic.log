@@ -1,0 +1,174 @@
+﻿STEP-VALIDATE-IMAGESTREAM
+
+PARAMETROS (S.O):
+-----------------
+NAME="Red Hat Enterprise Linux"
+VERSION="8.6 (Ootpa)"
+ID="rhel"
+ID_LIKE="fedora"
+VERSION_ID="8.6"
+PLATFORM_ID="platform:el8"
+PRETTY_NAME="Red Hat Enterprise Linux 8.6 (Ootpa)"
+ANSI_COLOR="0;31"
+CPE_NAME="cpe:/o:redhat:enterprise_linux:8::baseos"
+HOME_URL="https://www.redhat.com/"
+DOCUMENTATION_URL="https://access.redhat.com/documentation/red_hat_enterprise_linux/8/"
+BUG_REPORT_URL="https://bugzilla.redhat.com/"
+
+REDHAT_BUGZILLA_PRODUCT="Red Hat Enterprise Linux 8"
+REDHAT_BUGZILLA_PRODUCT_VERSION=8.6
+REDHAT_SUPPORT_PRODUCT="Red Hat Enterprise Linux"
+REDHAT_SUPPORT_PRODUCT_VERSION="8.6"
+Red Hat Enterprise Linux release 8.6 (Ootpa)
+Red Hat Enterprise Linux release 8.6 (Ootpa)
+
+NAME                 IMAGE REPOSITORY                                                                           TAGS     UPDATED
+apic-toolkit-image   default-route-openshift-image-registry.apps.tarkin.coc-ibm.com/temp-3/apic-toolkit-image   latest   About a minute ago
+- EL RECURSO ==> [imagestream: apic-toolkit-image] SI EXISTE, NO PROCEDE A: 'INSTALAR'.
+imagestream.image.openshift.io "apic-toolkit-image" deleted
+imagestream.image.openshift.io/apic-toolkit-image imported
+
+Name:			apic-toolkit-image
+Namespace:		temp-3
+Created:		Less than a second ago
+Labels:			<none>
+Annotations:		openshift.io/image.dockerRepositoryCheck=2024-03-19T03:24:23Z
+Image Repository:	default-route-openshift-image-registry.apps.tarkin.coc-ibm.com/temp-3/apic-toolkit-image
+Image Lookup:		local=false
+Unique Images:		1
+Tags:			1
+
+latest
+  tagged from docker.io/maktup/apic-toolkit-image:latest
+
+  * docker.io/maktup/apic-toolkit-image@sha256:9b84ef67428533d1cd6b35f4a6b34449a038aab8d5158eee3e0d605964cdf0ca
+      Less than a second ago
+
+Image Name:	apic-toolkit-image:latest
+Docker Image:	docker.io/maktup/apic-toolkit-image@sha256:9b84ef67428533d1cd6b35f4a6b34449a038aab8d5158eee3e0d605964cdf0ca
+Name:		sha256:9b84ef67428533d1cd6b35f4a6b34449a038aab8d5158eee3e0d605964cdf0ca
+Created:	Less than a second ago
+Annotations:	image.openshift.io/dockerLayersOrder=ascending
+Image Size:	122.7MB in 9 layers
+Layers:		27.51MB	sha256:17d0386c2fff30a5b92652bbef2b84639dba9b9f17bdbb819c8d10badd827fdb
+		34.18MB	sha256:27e4360dca1a65577d0e76b539970f301b1f544abfa2eea5b1bbd5926fb50127
+		6.733MB	sha256:1397ce5f957fc54797e5aab540fcdc278ec4cc68e83f3ec36d36cf1fcc424a14
+		380B	sha256:f9538c70831d821be93dac0872e3b745670a501b5c9fa8e17e416b613712a97f
+		18.02MB	sha256:a03c33ad97339f9bebacd48ba21375c6e3986c4763f13c58d8fb7653c8acc799
+		18.1MB	sha256:6ce0b664c9aa43cbffd6025f923e44bf984ac85773bdac22ed3cda29876bf564
+		18.1MB	sha256:0a4d18935d38c1546103428c23b6c35bbd5721151f217892596fdd5aaa24266f
+		139B	sha256:01436a2d7e850f388fa5cbfbb7680c99705ec4864414cac215efc5acd96aedc4
+		222B	sha256:d776f9a5cf6db12cb73832097b5faaed62edbf7b46047cb9987f2afdcc404009
+Image Created:	12 days ago
+Author:		<none>
+Arch:		amd64
+Command:	tail -f /dev/null
+Working Dir:	<none>
+User:		<none>
+Exposes Ports:	<none>
+Docker Labels:	org.opencontainers.image.ref.name=ubuntu
+		org.opencontainers.image.version=20.04
+Environment:	PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/app
+		APIC_TOOLKIT=/app
+
+
+
+
+
+STEP-VALIDATE-DEPLOY
+
+PARAMETROS (S.O):
+-----------------
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=20.04
+DISTRIB_CODENAME=focal
+DISTRIB_DESCRIPTION="Ubuntu 20.04.6 LTS"
+NAME="Ubuntu"
+VERSION="20.04.6 LTS (Focal Fossa)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 20.04.6 LTS"
+VERSION_ID="20.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=focal
+UBUNTU_CODENAME=focal
+
+PARAMETROS DE ENTRADA (PIPELINERUN):
+------------------------------------
+20240319032428 - [INFO]: _ Nombre de vSERVER_APIC: [https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001]
+20240319032428 - [INFO]: _ Nombre de vREGION_APIC: [provider/default-idp-2]
+20240319032428 - [INFO]: _ Nombre de vUSER_APIC: [cguerra]
+20240319032428 - [INFO]: _ Nombre de vPASS_APIC: [x12345678]
+20240319032428 - [INFO]: _ Nombre de vCATALOG_APIC: [laboratorios]
+20240319032428 - [INFO]: _ Nombre de vORG_APIC_DEV: [dev-01]
+20240319032428 - [INFO]: _ Nombre de vORG_APIC_QA: [qa-01]
+20240319032428 - [INFO]: _ Nombre de vORG_APIC_PROD: []
+20240319032428 - [INFO]: _ Nombre de vFILE_PROD_PUBLISH: [producto-publish.txt]
+20240319032428 - [INFO]: _ Nombre de vFILE_PROD: [product-crga-new_1.0.0.yaml]
+20240319032428 - [INFO]: _ Nombre de vNOM_PROD_VER: [product-crga-new:1.0.0]
+20240319032428 - [INFO]: _ Nombre de vOPERACION: [undeploy]
+
+20240319032428 - [INFO]: ******************** [START] ********************
+20240319032428 - [INFO]: EXECUTING SCRIPT...
+
+AMBIENTE A DESPLEGAR ==> [qa-01]
+
+INICIANDO OPCION: 'UNDEPLOY'...
+20240319032428 - [INFO]:> [ STEP 1 OF 8 ]: ELIMINANDO ARCHIVOS LOCALES..
+20240319032428 - [INFO]:> Ejecutando => rm -f *.yaml
+2>> Done ..
+
+20240319032428 - [INFO]:> [ STEP 2 OF 8 ]: LOGIN EN 'IBM API CONNECT'..
+20240319032428 - [INFO]:> Ejecutando => apic login -s https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001 -r provider/default-idp-2 -u cguerra -p x12345678 --accept-license
+Warning: Using default toolkit credentials.
+Logged into cpd-cp4i.apps.tarkin.coc-ibm.com successfully
+2>> Done ..
+
+20240319032428 - [INFO]:> [ STEP 3 OF 8 ]: DESCARGANDO EL PRODUCTO DESEADO EN BASE AL NOMBRE & VERSION..
+20240319032428 - [INFO]:> Ejecutando => apic draft-products:get product-crga-new:1.0.0 -s https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001 -o qa-01
+product-crga-new:1.0.0   product-crga-new_1.0.0.yaml      
+3>> Done ..
+
+20240319032428 - [INFO]:> [ STEP 4 OF 8 ]: RECORRIENDO LAS APIS ASOCIADAS DENTRO DEL PRODUCTO & DESCARGANDOLAS..
+API OBTENIDA ==> api-jwt-generate:1.0.0
+apic draft-apis:get api-jwt-generate:1.0.0 -s https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001 -o qa-01
+api-jwt-generate:1.0.0   api-jwt-generate_1.0.0.yaml      
+API OBTENIDA ==> api-jwt-validate:1.0.0
+apic draft-apis:get api-jwt-validate:1.0.0 -s https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001 -o qa-01
+api-jwt-validate:1.0.0   api-jwt-validate_1.0.0.yaml      
+API OBTENIDA ==> api-crga-lab01:1.0.0
+apic draft-apis:get api-crga-lab01:1.0.0 -s https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001 -o qa-01
+api-crga-lab01:1.0.0   api-crga-lab01_1.0.0.yaml      
+3>> Done ..
+
+20240319032428 - [INFO]:> [ STEP 5 OF 8 ]: ELIMINANDO APIS ASOCIADAS AL PRODUCTO EN ORG.PROVEEDORA (NUEVA)..
+API OBTENIDA ==> api-jwt-generate:1.0.0
+draft-apis:delete api-jwt-generate:1.0.0 -s https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001 -o qa-01
+api-jwt-generate:1.0.0   https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001/api/orgs/ebe7c55f-af3e-4ecf-accb-a03d90a63fd9/drafts/draft-apis/5257a441-bf86-4174-a099-96365a883034   
+API OBTENIDA ==> api-jwt-validate:1.0.0
+draft-apis:delete api-jwt-validate:1.0.0 -s https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001 -o qa-01
+api-jwt-validate:1.0.0   https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001/api/orgs/ebe7c55f-af3e-4ecf-accb-a03d90a63fd9/drafts/draft-apis/49ee509d-2c79-4943-a580-d4dfc0ba78a3   
+API OBTENIDA ==> api-crga-lab01:1.0.0
+draft-apis:delete api-crga-lab01:1.0.0 -s https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001 -o qa-01
+api-crga-lab01:1.0.0   https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001/api/orgs/ebe7c55f-af3e-4ecf-accb-a03d90a63fd9/drafts/draft-apis/50aa9014-943a-4893-924d-3e1e9e9fbd6e   
+3>> Done ..
+
+20240319032428 - [INFO]:> [ STEP 6 OF 8 ]: ELIMINANDO PRODUCTO EN NUEVA ORG.PROVEEDORA (COMPONENTES)..
+20240319032428 - [INFO]:> Ejecutando => apic draft-products:delete product-crga_1.0.0.yaml -s https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001 -o qa-01
+product-crga-new:1.0.0   https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001/api/orgs/ebe7c55f-af3e-4ecf-accb-a03d90a63fd9/drafts/draft-products/0b396557-fe58-495a-97f0-568aafc890c9   
+20240319032428 - [INFO]:>> Done ..
+
+20240319032428 - [INFO]:> [ STEP 7 OF 8 ]: ELIMINANDO PRODUCTO EN NUEVA ORG.PROVEEDORA (DESPLIEGUE)..
+20240319032428 - [INFO]:> Ejecutando => apic products:delete -s https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001 -o qa-01 --scope catalog --catalog laboratorios product-crga-new:1.0.0
+product-crga-new:1.0.0    [state: published]   https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001/api/catalogs/ebe7c55f-af3e-4ecf-accb-a03d90a63fd9/f5d461e5-92cf-4ea7-85a2-d80156390c41/products/b81bda5c-eca9-4dce-854d-e14a34253c41   
+20240319032428 - [INFO]:>> Done ..
+
+20240319032428 - [INFO]:> [ STEP 8 OF 8 ]: CERRANDO SESION DE APIC..
+20240319032428 - [INFO]:> Ejecutando => apic logout -s https://cpd-cp4i.apps.tarkin.coc-ibm.com/integration/apis/cp4i-crga/inst-apic-001
+Successfully logged out of cpd-cp4i.apps.tarkin.coc-ibm.com
+2>> Done ..
+
+20240319032428 - [INFO]: ******************** [END] *********************

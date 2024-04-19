@@ -1,0 +1,420 @@
+
+######################################################################################################
+## SCRIPTs para la creación del PIPELINE & TASKs, para la ejecucion MANUAL del FLUJO automatizador. ##
+######################################################################################################
+
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deploy-apic
+  namespace: temp-3
+spec:
+  workspaces:
+  - name: source
+  
+  params:
+    - name: vSERVER_APIC
+      description: "NOMBRE DEL SERVIDOR DE APIC"
+      
+    - name: vREGION_APIC
+      description: "NOMBRE DE LA REGION DE APIC (AUTENTICACION)"
+      
+    - name: vUSER_APIC
+      description: "NOMBRE DEL USUARIO DE APIC (AUTENTICACION)"
+
+    - name: vPASS_APIC
+      description: "NOMBRE DEL PASSWORD DE APIC (AUTENTICACION)"
+
+    - name: vCATALOG_APIC
+      description: "NOMBRE DEL CATALOGO DE APIC"
+
+    - name: vORG_APIC_DEV
+      description: "NOMBRE DE LA ORG. PROVEEDORA DE APIC PARA EL AMBIENTE (DEV)"
+
+    - name: vORG_APIC_QA
+      description: "NOMBRE DE LA ORG. PROVEEDORA DE APIC PARA EL AMBIENTE (QA)"
+      
+    - name: vORG_APIC_PROD
+      description: "NOMBRE DE LA ORG. PROVEEDORA DE APIC PARA EL AMBIENTE (PROD)"      
+ 
+    - name: vFILE_PROD
+      description: "NOMBRE DEL ARCHIVO PARA LA PUBLICACION"
+ 
+    - name: vNOM_PROD_VER
+      description: "NOMBRE DEL PRODUCTO / VERSION"
+ 
+    - name: vOPERACION
+      description: "NOMBRE DEL TIPO DE OPERACION A EJECUTAR"
+ 
+  steps:
+    - name: validate-imagestream
+      image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+      resources: {}
+      script: |+
+        #!/bin/bash
+        
+        #VERSIÓN DE 'DISTRIBUCIÓN DE LINUX' UTILIZADA:
+        echo "PARAMETROS (S.O):"
+        echo "-----------------"   
+        cat /etc/*release
+        
+        #CONTROL DE ERRORES: Se activan opciones para trabajar en modo 'MANEJO DE ERRORES'.
+        set -eu -o pipefail
+        
+        vIMAGEN="apic-toolkit-image"
+        vREPOSITORIOIMAGEN="docker.io/maktup/apic-toolkit-image:latest"
+        vCOMANDO="oc get imagestream apic-toolkit-image -n temp-3"
+        vNAMESPACE="temp-3"        
+        vWAIT_TIME_4=4
+        
+        echo ""
+        if ${vCOMANDO} 2>&1; then
+           echo "- EL RECURSO ==> [imagestream: ${vIMAGEN}] SI EXISTE, NO PROCEDE A: 'INSTALAR'."
+           oc delete imagestream ${vIMAGEN} -n ${vNAMESPACE}
+           sleep ${vWAIT_TIME_4} 
+           oc import-image ${vIMAGEN} --from=${vREPOSITORIOIMAGEN} --confirm -n ${vNAMESPACE}
+           sleep ${vWAIT_TIME_4}  
+           echo ""
+        else 
+            echo "- EL RECURSO ==> [imagestream: ${vIMAGEN}] NO EXISTE, SE PROCEDE A: 'INSTALAR'."
+            oc import-image ${vIMAGEN} --from={vREPOSITORIOIMAGEN} --confirm -n ${vNAMESPACE}
+            sleep ${vWAIT_TIME_4}  
+            echo ""   
+        fi  
+  
+    - name: validate-deploy
+      image: image-registry.openshift-image-registry.svc:5000/temp-3/apic-toolkit-image
+      resources: {}
+      script: |+
+        #!/bin/bash
+ 
+        #VERSIÓN DE 'DISTRIBUCIÓN DE LINUX' UTILIZADA:        
+        echo "PARAMETROS (S.O):"
+        echo "-----------------"   
+        cat /etc/*release
+        
+        #CONTROL DE ERRORES: Se activan opciones para trabajar en modo 'MANEJO DE ERRORES'.
+        set -eu -o pipefail
+ 
+        vCURRENT_DATE=$(date "+%Y%m%d%H%M%S")
+        vTRANSACTION="$vCURRENT_DATE - [INFO]": 
+        vWAIT_TIME_2=2
+        vWAIT_TIME_3=3
+         
+        vSERVER_APIC="$(params.vSERVER_APIC)"
+        vREGION_APIC="$(params.vREGION_APIC)"
+        vUSER_APIC="$(params.vUSER_APIC)"
+        vPASS_APIC="$(params.vPASS_APIC)"
+        vCATALOG_APIC="$(params.vCATALOG_APIC)"
+        vORG_APIC_DEV="$(params.vORG_APIC_DEV)"        
+        vORG_APIC_QA="$(params.vORG_APIC_QA)"
+        vORG_APIC_PROD="$(params.vORG_APIC_PROD)"
+        vFILE_PROD_PUBLISH="producto-publish.txt"
+        vFILE_PROD="$(params.vFILE_PROD)"
+        vNOM_PROD_VER="$(params.vNOM_PROD_VER)"
+        vFILE_PLAN_PUBLISH="plan-publish.txt"
+        vOPERACION="$(params.vOPERACION)"
+        
+        echo ""
+        echo "PARAMETROS DE ENTRADA (PIPELINERUN):"
+        echo "------------------------------------"   
+        echo "${vTRANSACTION} _ Nombre de vSERVER_APIC: [${vSERVER_APIC}]"
+        echo "${vTRANSACTION} _ Nombre de vREGION_APIC: [${vREGION_APIC}]"
+        echo "${vTRANSACTION} _ Nombre de vUSER_APIC: [${vUSER_APIC}]"
+        echo "${vTRANSACTION} _ Nombre de vPASS_APIC: [${vPASS_APIC}]"
+        echo "${vTRANSACTION} _ Nombre de vCATALOG_APIC: [${vCATALOG_APIC}]"
+        echo "${vTRANSACTION} _ Nombre de vORG_APIC_DEV: [${vORG_APIC_DEV}]"
+        echo "${vTRANSACTION} _ Nombre de vORG_APIC_QA: [${vORG_APIC_QA}]"
+        echo "${vTRANSACTION} _ Nombre de vORG_APIC_PROD: [${vORG_APIC_PROD}]"        
+        echo "${vTRANSACTION} _ Nombre de vFILE_PROD_PUBLISH: [${vFILE_PROD_PUBLISH}]"
+        echo "${vTRANSACTION} _ Nombre de vFILE_PROD: [${vFILE_PROD}]"
+        echo "${vTRANSACTION} _ Nombre de vNOM_PROD_VER: [${vNOM_PROD_VER}]"
+        echo "${vTRANSACTION} _ Nombre de vOPERACION: [${vOPERACION}]"       
+        echo ""   
+             
+        echo "${vTRANSACTION} ******************** [START] ********************"
+        echo "${vTRANSACTION} EXECUTING SCRIPT..."
+        echo ""        
+ 
+        vNOMBREPROD=$(echo "${vNOM_PROD_VER}" | cut -d ':' -f 1)
+        vVERSIONPROD=$(echo "${vNOM_PROD_VER}" | cut -d ':' -f 2)  
+        vORG_DEPLOY="";
+        
+        ############## [VALIDACION AMBIENTE A DESPLEGAR] ############## 
+        if [ "${vORG_APIC_QA}" != "" ]; then
+             vORG_DEPLOY=${vORG_APIC_QA};
+        fi
+             
+        if [ "${vORG_APIC_PROD}" != "" ]; then 
+             vORG_DEPLOY=${vORG_APIC_PROD}; 
+        fi 
+        
+        echo "AMBIENTE A DESPLEGAR ==> [${vORG_DEPLOY}]"
+        echo ""
+        
+        if [ "${vOPERACION}" = "deploy" ]; then
+             echo "INICIANDO OPCION: 'DEPLOY'..." 
+
+             ############## [DEPLOY] ##############              
+             echo "${vTRANSACTION}> [ STEP 1 OF 9 ]: ELIMINANDO ARCHIVOS LOCALES.." 
+             echo "${vTRANSACTION}> Ejecutando => rm -f *.yaml"
+             rm -f *.yaml
+             echo "${vWAIT_TIME_2}>> Done .."
+             echo ""
+             
+             
+             echo "${vTRANSACTION}> [ STEP 2 OF 9 ]: LOGIN EN 'IBM API CONNECT'.."
+             echo "${vTRANSACTION}> Ejecutando => apic login -s ${vSERVER_APIC} -r ${vREGION_APIC} -u ${vUSER_APIC} -p ${vPASS_APIC} --accept-license"
+             apic login -s ${vSERVER_APIC} -r ${vREGION_APIC} -u ${vUSER_APIC} -p ${vPASS_APIC} --accept-license
+             sleep ${vWAIT_TIME_2}
+             echo "${vWAIT_TIME_2}>> Done .."
+             echo ""
+             
+             
+             echo "${vTRANSACTION}> [ STEP 3 OF 9 ]: LISTANDO LOS PRODUCTOS EXISTENTES EN BASE AL NOMBRE & VERSION.."
+             echo "${vTRANSACTION}> Ejecutando => apic products:list -s ${vSERVER_APIC} -o dev-01 --catalog ${vCATALOG_APIC} --scope catalog ${vNOMBREPROD}" 
+             apic products:list -s ${vSERVER_APIC} -o dev-01 --catalog ${vCATALOG_APIC} --scope catalog ${vNOMBREPROD}        
+             sleep ${vWAIT_TIME_2}
+             echo "${vWAIT_TIME_2}>> Done .."
+             echo ""
+             
+             
+             echo "${vTRANSACTION}> [ STEP 4 OF 9 ]: DESCARGANDO EL PRODUCTO DESEADO EN BASE AL NOMBRE & VERSION.."
+             echo "${vTRANSACTION}> Ejecutando => apic draft-products:get ${vNOM_PROD_VER} -s ${vSERVER_APIC} -o ${vORG_APIC_DEV}"
+             apic draft-products:get ${vNOM_PROD_VER} -s ${vSERVER_APIC} -o ${vORG_APIC_DEV} 
+             sleep ${vWAIT_TIME_3}
+             echo "${vWAIT_TIME_3}>> Done .."
+             echo ""
+             
+             
+             echo "${vTRANSACTION}> [ STEP 5 OF 9 ]: RECORRIENDO LAS APIS ASOCIADAS DENTRO DEL PRODUCTO & DESCARGANDOLAS.."
+             ARCHIVO_PRODUCTO_YAML=$(< ${vFILE_PROD})
+             NOMBREAPI=($(echo "$ARCHIVO_PRODUCTO_YAML" | awk '/^apis:/,/^$/' | grep '^\s*name:' | awk '{print $2}'))
+             for VALOR in "${NOMBREAPI[@]}"; do
+                 echo "API OBTENIDA ==> ${VALOR}"
+                 echo "apic draft-apis:get ${VALOR} -s ${vSERVER_APIC} -o ${vORG_APIC_DEV}"
+                 apic draft-apis:get ${VALOR} -s ${vSERVER_APIC} -o ${vORG_APIC_DEV}
+             done
+             sleep ${vWAIT_TIME_3}
+             echo "${vWAIT_TIME_3}>> Done .."
+             echo ""  
+             
+             
+             echo "${vTRANSACTION}> [ STEP 6 OF 9 ]: INSTALANDO LAS APIS DESCARGADAS EN LA NUEVA ORG.PROVEEDORA.."
+             ARCHIVO_PRODUCTO_YAML=$(< ${vFILE_PROD})
+             NOMBREAPI=($(echo "$ARCHIVO_PRODUCTO_YAML" | awk '/^apis:/,/^$/' | grep '^\s*name:' | awk '{print $2}'))
+             for VALOR in "${NOMBREAPI[@]}"; do 
+             	  echo "API OBTENIDA ==> ${VALOR}"
+                 NOMBREARCHIVO=$(echo "$VALOR" | sed 's/:/_/' | sed 's/:/_/' | sed 's/:/_/' | sed 's/:/_/' | sed 's/:/_/' | sed 's/:/_/' | sed 's/$/.yaml/')              	  
+                 echo "apic draft-apis:create ${NOMBREARCHIVO} -s ${vSERVER_APIC} -o ${vORG_DEPLOY}" 
+                 apic draft-apis:create ${NOMBREARCHIVO} -s ${vSERVER_APIC} -o ${vORG_DEPLOY}
+             done          
+             sleep ${vWAIT_TIME_3}
+             echo "${vWAIT_TIME_3}>> Done .."
+             echo ""  
+              
+              
+             echo "${vTRANSACTION}> [ STEP 7 OF 9 ]: INSTALANDO EL PRODUCTO DESCARGADO EN NUEVA ORG.PROVEEDORA & OBTENIENDO 'draft_product_url' DEL PRODUCTO.."
+             echo "${vTRANSACTION}> Ejecutando => apic draft-products:create ${vFILE_PROD} -s ${vSERVER_APIC} -o ${vORG_DEPLOY}"
+             vRESP=$(apic draft-products:create ${vFILE_PROD} -s ${vSERVER_APIC} -o ${vORG_DEPLOY}) 
+             echo "vRESP ==> ${vRESP}"
+             vURL_PROD=$(echo ${vRESP} | cut -d ' ' -f2)  #OBTIENE VALOR IMPRESO EN COLUMNA#2.
+             echo "vURL_PROD ==> ${vURL_PROD}" 
+             sleep ${vWAIT_TIME_3}
+             echo "${vWAIT_TIME_3}>> Done .."
+             echo ""    
+             
+             
+             echo "${vTRANSACTION}> [ STEP 8 OF 9 ]: PUBLICANDO EL PRODUCTO CON LAS APIS ASOCIADAS EN PORTAL EN LA ORG.PROVEEDORA (NUEVA).."
+             echo "draft_product_url: ${vURL_PROD}" > ${vFILE_PROD_PUBLISH}
+             cat ${vFILE_PROD_PUBLISH}        
+             echo "${vTRANSACTION}> Ejecutando => apic draft-products:publish -s ${vSERVER_APIC} --catalog=${vCATALOG_APIC} -o ${vORG_DEPLOY} ${vFILE_PROD_PUBLISH}"
+             vRESP=$(apic draft-products:publish -s ${vSERVER_APIC} --catalog=${vCATALOG_APIC} -o ${vORG_DEPLOY} ${vFILE_PROD_PUBLISH})
+             echo "vRESP ==> ${vRESP}"
+             vURL_PROD=$(echo ${vRESP} | cut -d' ' -f 4)  #OBTIENE VALOR IMPRESO EN COLUMNA#4.
+             echo "vURL_PROD ==> ${vURL_PROD}" 
+             vCADENA_URL="product_url: ${vURL_PROD}"        
+             echo ${vCADENA_URL}>${vFILE_PLAN_PUBLISH}
+             echo "plans:">>${vFILE_PLAN_PUBLISH}
+             echo "- source: default">>${vFILE_PLAN_PUBLISH}
+             echo "  target: default">>${vFILE_PLAN_PUBLISH}
+             cat ${vFILE_PLAN_PUBLISH}
+             sleep ${vWAIT_TIME_3}
+             echo "${vWAIT_TIME_3}>> Done .."
+             echo "" 
+             
+             
+             echo "${vTRANSACTION}> [ STEP 9 OF 9 ]: CERRANDO SESION DE APIC.."
+             echo "${vTRANSACTION}> Ejecutando => apic logout -s ${vSERVER_APIC}"
+             apic logout -s ${vSERVER_APIC}
+             sleep ${vWAIT_TIME_2}
+             echo "${vWAIT_TIME_2}>> Done .."
+             echo ""
+ 
+        elif [ "${vOPERACION}" = "undeploy" ]; then        
+             echo "INICIANDO OPCION: 'UNDEPLOY'..."
+            
+             ############## [UNDEPLOY] ##############              
+             echo "${vTRANSACTION}> [ STEP 1 OF 8 ]: ELIMINANDO ARCHIVOS LOCALES.." 
+             echo "${vTRANSACTION}> Ejecutando => rm -f *.yaml"
+             rm -f *.yaml
+             echo "${vWAIT_TIME_2}>> Done .."
+             echo ""
+             
+             
+             echo "${vTRANSACTION}> [ STEP 2 OF 8 ]: LOGIN EN 'IBM API CONNECT'.."
+             echo "${vTRANSACTION}> Ejecutando => apic login -s ${vSERVER_APIC} -r ${vREGION_APIC} -u ${vUSER_APIC} -p ${vPASS_APIC} --accept-license"
+             apic login -s ${vSERVER_APIC} -r ${vREGION_APIC} -u ${vUSER_APIC} -p ${vPASS_APIC} --accept-license
+             sleep ${vWAIT_TIME_2}
+             echo "${vWAIT_TIME_2}>> Done .."
+             echo ""
+             
+             
+             echo "${vTRANSACTION}> [ STEP 3 OF 8 ]: DESCARGANDO EL PRODUCTO DESEADO EN BASE AL NOMBRE & VERSION.."
+             echo "${vTRANSACTION}> Ejecutando => apic draft-products:get ${vNOM_PROD_VER} -s ${vSERVER_APIC} -o ${vORG_DEPLOY}"
+             apic draft-products:get ${vNOM_PROD_VER} -s ${vSERVER_APIC} -o ${vORG_DEPLOY} 
+             sleep ${vWAIT_TIME_3}
+             echo "${vWAIT_TIME_3}>> Done .."
+             echo ""
+             
+             
+             echo "${vTRANSACTION}> [ STEP 4 OF 8 ]: RECORRIENDO LAS APIS ASOCIADAS DENTRO DEL PRODUCTO & DESCARGANDOLAS.."
+             ARCHIVO_PRODUCTO_YAML=$(< ${vFILE_PROD})
+             NOMBREAPI=($(echo "$ARCHIVO_PRODUCTO_YAML" | awk '/^apis:/,/^$/' | grep '^\s*name:' | awk '{print $2}'))
+             for VALOR in "${NOMBREAPI[@]}"; do
+                 echo "API OBTENIDA ==> ${VALOR}"
+                 echo "apic draft-apis:get ${VALOR} -s ${vSERVER_APIC} -o ${vORG_DEPLOY}"
+                 apic draft-apis:get ${VALOR} -s ${vSERVER_APIC} -o ${vORG_DEPLOY}
+             done
+             sleep ${vWAIT_TIME_3}
+             echo "${vWAIT_TIME_3}>> Done .."
+             echo "" 
+             
+             
+             echo "${vTRANSACTION}> [ STEP 5 OF 8 ]: ELIMINANDO APIS ASOCIADAS AL PRODUCTO EN ORG.PROVEEDORA (NUEVA).."
+             ARCHIVO_PRODUCTO_YAML=$(< ${vFILE_PROD})
+             NOMBREAPI=($(echo "$ARCHIVO_PRODUCTO_YAML" | awk '/^apis:/,/^$/' | grep '^\s*name:' | awk '{print $2}'))
+             for VALOR in "${NOMBREAPI[@]}"; do
+                 echo "API OBTENIDA ==> ${VALOR}"
+                 echo "draft-apis:delete ${VALOR} -s ${vSERVER_APIC} -o ${vORG_DEPLOY}"
+                 apic draft-apis:delete ${VALOR} -s ${vSERVER_APIC} -o ${vORG_DEPLOY}
+             done
+             sleep ${vWAIT_TIME_3}
+             echo "${vWAIT_TIME_3}>> Done .."
+             echo "" 
+             
+             
+             echo "${vTRANSACTION}> [ STEP 6 OF 8 ]: ELIMINANDO PRODUCTO EN NUEVA ORG.PROVEEDORA (COMPONENTES).."
+             echo "${vTRANSACTION}> Ejecutando => apic draft-products:delete product-crga_1.0.0.yaml -s ${vSERVER_APIC} -o ${vORG_DEPLOY}"
+             apic draft-products:delete ${vNOM_PROD_VER} -s ${vSERVER_APIC} -o ${vORG_DEPLOY}
+             sleep ${vWAIT_TIME_3}
+             echo "${vTRANSACTION}>> Done .."
+             echo ""          
+             
+             
+             echo "${vTRANSACTION}> [ STEP 7 OF 8 ]: ELIMINANDO PRODUCTO EN NUEVA ORG.PROVEEDORA (DESPLIEGUE).."
+             echo "${vTRANSACTION}> Ejecutando => apic products:delete -s ${vSERVER_APIC} -o ${vORG_DEPLOY} --scope catalog --catalog ${vCATALOG_APIC} ${vNOM_PROD_VER}"
+             apic products:delete -s ${vSERVER_APIC} -o ${vORG_DEPLOY} --scope catalog --catalog ${vCATALOG_APIC} ${vNOM_PROD_VER}
+             sleep ${vWAIT_TIME_3}
+             echo "${vTRANSACTION}>> Done .."
+             echo "" 
+             
+             
+             echo "${vTRANSACTION}> [ STEP 8 OF 8 ]: CERRANDO SESION DE APIC.."
+             echo "${vTRANSACTION}> Ejecutando => apic logout -s ${vSERVER_APIC}"
+             apic logout -s ${vSERVER_APIC}
+             sleep ${vWAIT_TIME_2}
+             echo "${vWAIT_TIME_2}>> Done .."
+             echo "" 
+             
+        fi 
+  
+        echo "${vTRANSACTION} ******************** [END] *********************"
+---
+
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: pipeline-deploy-apic
+  namespace: temp-3
+    
+spec:
+  params:
+    - name: vSERVER_APIC
+      type: string
+      default: 'xxx'
+      
+    - name: vREGION_APIC
+      type: string
+      default: 'xxx'
+ 
+    - name: vUSER_APIC
+      type: string
+      default: 'xxx'
+ 
+    - name: vPASS_APIC
+      type: string
+      default: 'xxx'
+      
+    - name: vCATALOG_APIC
+      type: string
+      default: 'xxx'
+
+    - name: vORG_APIC_DEV
+      type: string
+      default: 'xxx'
+      
+    - name: vORG_APIC_QA
+      type: string
+      default: 'xxx'
+      
+    - name: vORG_APIC_PROD
+      type: string
+      default: 'xxx'      
+      
+    - name: vFILE_PROD
+      type: string
+      default: 'xxx'     
+ 
+    - name: vNOM_PROD_VER
+      type: string
+      default: 'xxx'            
+ 
+    - name: vOPERACION
+      type: string
+      default: 'xxx'
+      
+  tasks:
+    - name: deploy-apic
+      params:
+        - name: vSERVER_APIC
+          value: $(params.vSERVER_APIC)
+        - name: vREGION_APIC
+          value: $(params.vREGION_APIC)
+        - name: vUSER_APIC
+          value: $(params.vUSER_APIC)
+        - name: vPASS_APIC
+          value: $(params.vPASS_APIC)
+        - name: vCATALOG_APIC
+          value: $(params.vCATALOG_APIC)          
+        - name: vORG_APIC_DEV
+          value: $(params.vORG_APIC_DEV)
+        - name: vORG_APIC_QA
+          value: $(params.vORG_APIC_QA)          
+        - name: vORG_APIC_PROD
+          value: $(params.vORG_APIC_PROD)          
+        - name: vFILE_PROD
+          value: $(params.vFILE_PROD)
+        - name: vNOM_PROD_VER
+          value: $(params.vNOM_PROD_VER)
+        - name: vOPERACION
+          value: $(params.vOPERACION)
+      taskRef:
+        name: deploy-apic
+      workspaces:
+      - name: source
+        workspace: workspace-pipeline-apic
+ 
+  workspaces:
+    - name: workspace-pipeline-apic
+
