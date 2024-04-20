@@ -75,7 +75,7 @@ The following ARCHITECTURE shows how the different RESOURCES used within the OPE
  
 ## 'STEP#C':
 - Within **OPENSHIFT** the **NAMESPACE** where we will work in this case: '**temp-3**'.
-- Within **OPENSHIFT** generate the** IMAGE-STREAM** based on the **IMAGE** path:
+- Within **OPENSHIFT** generate the **IMAGE-STREAM** based on the **IMAGE** path:
       $ oc import-image apic-toolkit-image --from=docker.io/maktup/apic-toolkit-image:latest --confirm -n temp-3
   
   
