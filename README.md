@@ -1,7 +1,7 @@
 # DEPLOYMENT AUTOMATION WITH: 'IBM APIC TOOLKIT & OPENSHIFT PIPELINE (TEKTON)': 
 
 ## 1. CONTEXT:
-This DEMO allows the INTEGRATION between IBM APICTOOLKIT & OPENSHIFT PIPELINE (TEKTON), with the objetive of providing AUTOMATION for the deployments of: APIs, etc. created in IBM APIC v10s.
+This DEMO allows the INTEGRATION between IBM APICTOOLKIT & OPENSHIFT PIPELINE (TEKTON), with the objetive of providing AUTOMATION for the deployments of: APIs, etc. created in IBM APIC v10.
 
 
 ## 2. ARCHITECTURE:
