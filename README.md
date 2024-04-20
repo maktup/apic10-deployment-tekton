@@ -70,7 +70,7 @@ The following ARCHITECTURE shows how the different RESOURCES used within the OPE
       $ docker push docker.io/maktup/apic-toolkit-image:latest
   
 - The **ROUTE** generated in the **IMAGE REGISTRY** in this case is:
-**  'maktup/apic-toolkit-image:latest'**
+**'maktup/apic-toolkit-image:latest'**
 
  
 ## 'STEP#C':
