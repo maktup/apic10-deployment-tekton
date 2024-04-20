@@ -64,3 +64,32 @@ The following ARCHITECTURE shows how the different RESOURCES used within the OPE
             maktup/apic-toolkit-image latest   0eed61e4d311   12 days ago    272MB
 
 
+## 'STEP#B':
+- Create the **IMAGE-REGISTRY** in **DOCKER HUB**.
+- To **UPLOAD** the **IMAGE** to the **IMAGE-REGISTRY**:
+      $ docker push docker.io/maktup/apic-toolkit-image:latest
+  
+- The **ROUTE** generated in the **IMAGE REGISTRY** in this case is:
+**  'maktup/apic-toolkit-image:latest'**
+
+ 
+## 'STEP#C':
+- Within **OPENSHIFT** the **NAMESPACE** where we will work in this case: '**temp-3**'.
+- Within **OPENSHIFT** generate the** IMAGE-STREAM** based on the **IMAGE** path:
+      $ oc import-image apic-toolkit-image --from=docker.io/maktup/apic-toolkit-image:latest --confirm -n temp-3
+  
+  
+## 'STEP#D':
+- Get the generated **IMAGE-STREAM**:
+      $ oc get imagestreams apic-toolkit-image -n temp-3
+        default-route-openshift-image-registry.apps.tarkin.coc-ibm.com/temp-3/apic-toolkit-image  (PUBLIC IMAGE REPOSITORY)
+        image-registry.openshift-image-registry.svc:5000/temp-3/apic-toolkit-image                 (IMAGE REPOSITORY)*
+- Reuse the generated **IMAGE-STREAM** in **OPENSHIFT PIPELINE**.
+
+
+
+LINKS REFERENCIA:
+----------------
+*https://github.com/ibm-apiconnect/example-toolkit-scripts/tree/master/bash
+https://github.com/khongks/apic-scripts-public*
+
