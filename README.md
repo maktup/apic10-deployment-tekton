@@ -24,3 +24,43 @@ The following ARCHITECTURE shows how the different RESOURCES used within the OPE
 *C. BASED ON THE IMAGE IN THE IMAGE REGISTRY, GENERATE AN IMAGE-STREAM IN OPENSHIFT.*
 
 *D. THIS GENERATED IMAGE-STREAM IS THE ONE THAT WILL BE REUSED FOR OPENSHIFT PIPELINE.*
+
+
+-------------------------------------------------------------------------------------
+
+
+## 'IMPORTANT':
+
+## 'STEP#A':
+- Download the **APICTOOLKIT** file called: 'toolkit-linux.tgz' & place it in the path: **C:\IBM\APIC**
+- Next to creating the file: '**dockerfile**' with this content:
+
+        FROM ubuntu:20.04
+        RUN apt-get update
+        RUN apt-get install -y curl
+        RUN apt-get install coreutils
+        COPY toolkit-linux.tgz /app/
+        RUN tar -xzvf /app/toolkit-linux.tgz -C /app  
+        RUN mv /app/apic-slim /app/apic  
+        RUN rm /app/toolkit-linux.tgz
+        ENV APIC_TOOLKIT /app
+        ENV PATH="$PATH:$APIC_TOOLKIT"
+        RUN $APIC_TOOLKIT/apic version --accept-license
+        CMD ["tail", "-f", "/dev/null"]
+
+- To CREATE the **IMAGE** locally, execute:
+
+         $ docker login docker.io
+            Username: XXX
+            Password: XXX
+            Login Suceeded
+     
+         $ cd C:\IBM\APIC
+         $ docker build -t apic-toolkit-image .
+         $ docker images 
+            apic-toolkit-image        latest   0eed61e4d311   12 days ago    272MB 
+         $ docker tag apic-toolkit-image maktup/apic-toolkit-image:latest
+         $ docker images 
+            maktup/apic-toolkit-image latest   0eed61e4d311   12 days ago    272MB
+
+
