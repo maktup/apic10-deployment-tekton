@@ -88,8 +88,8 @@ The following ARCHITECTURE shows how the different RESOURCES used within the OPE
 
 
 
-LINKS REFERENCIA:
-----------------
+REFERENCE LINKS:
+--------------- 
 *https://github.com/ibm-apiconnect/example-toolkit-scripts/tree/master/bash
 https://github.com/khongks/apic-scripts-public*
 
